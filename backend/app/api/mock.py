@@ -180,6 +180,7 @@ class MockSimulator:
                 mana=max_mp,
                 max_mana=max_mp,
                 mana_percent=100,
+                aghanims_shard=minutes >= 18,
             ),
             abilities=_build_abilities(level),
             items=_build_items(minutes),

@@ -58,6 +58,32 @@ ABILITY_DAMAGE_MAP: Dict[str, Tuple[float, float, float]] = {
     "spectre_dispersion": (0.4, 0.4, 0.2),
     # Tinker
     "tinker_laser": (0.0, 0.0, 1.0),
+    # Muerta
+    "muerta_dead_shot": (0.0, 1.0, 0.0),
+    "muerta_the_calling": (0.0, 1.0, 0.0),
+    "muerta_pierce_the_veil": (0.0, 1.0, 0.0),
+    # Bristleback
+    "bristleback_quill_spray": (1.0, 0.0, 0.0),
+    "bristleback_viscous_nasal_goo": (1.0, 0.0, 0.0),
+    # Leshrac
+    "leshrac_split_earth": (0.0, 1.0, 0.0),
+    "leshrac_diabolic_edict": (1.0, 0.0, 0.0),
+    "leshrac_lightning_storm": (0.0, 1.0, 0.0),
+    "leshrac_pulse_nova": (0.0, 1.0, 0.0),
+    # Necrophos
+    "necrolyte_death_pulse": (0.0, 1.0, 0.0),
+    "necrolyte_heartstopper_aura": (0.0, 1.0, 0.0),
+    "necrolyte_reapers_scythe": (0.0, 1.0, 0.0),
+    # Sven
+    "sven_storm_bolt": (0.0, 1.0, 0.0),
+    "sven_gods_strength": (1.0, 0.0, 0.0),
+    # Ursa
+    "ursa_earthshock": (0.0, 1.0, 0.0),
+    "ursa_fury_swipes": (1.0, 0.0, 0.0),
+    # Mars
+    "mars_spear": (0.0, 1.0, 0.0),
+    "mars_gods_rebuke": (1.0, 0.0, 0.0),
+    "mars_arena_of_blood": (0.0, 1.0, 0.0),
 }
 
 # Items that add specific damage types or bonuses
@@ -132,6 +158,13 @@ HERO_BASE_PROFILES: Dict[str, Tuple[float, float, float]] = {
     "npc_dota_hero_drow_ranger": (0.95, 0.05, 0.0),
     "npc_dota_hero_sniper": (0.85, 0.15, 0.0),
     "npc_dota_hero_faceless_void": (0.90, 0.10, 0.0),
+    "npc_dota_hero_muerta": (0.10, 0.90, 0.0),
+    "npc_dota_hero_bristleback": (0.90, 0.10, 0.0),
+    "npc_dota_hero_leshrac": (0.05, 0.95, 0.0),
+    "npc_dota_hero_necrolyte": (0.05, 0.95, 0.0),
+    "npc_dota_hero_sven": (0.95, 0.05, 0.0),
+    "npc_dota_hero_ursa": (0.95, 0.05, 0.0),
+    "npc_dota_hero_mars": (0.70, 0.30, 0.0),
 }
 
 

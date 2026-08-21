@@ -36,16 +36,27 @@ class Broadcaster:
             return
 
         payload_json = message.model_dump_json()
-        dead_connections: Set[WebSocket] = set()
 
         async with self._lock:
-            for connection in self.active_connections:
-                try:
-                    await connection.send_text(payload_json)
-                except Exception:
-                    dead_connections.add(connection)
+            if not self.active_connections:
+                return
+            connections = list(self.active_connections)
 
-            self.active_connections -= dead_connections
+        # Broadcast concurrently across all active clients
+        results = await asyncio.gather(
+            *[conn.send_text(payload_json) for conn in connections],
+            return_exceptions=True,
+        )
+
+        dead: Set[WebSocket] = set()
+        for conn, res in zip(connections, results):
+            if isinstance(res, Exception):
+                dead.add(conn)
+
+        if dead:
+            async with self._lock:
+                self.active_connections -= dead
+            logger.info(f"Cleaned up {len(dead)} dead WS connections.")
 
     async def broadcast_state_update(self, state: ProcessedGameState):
         msg = WSMessage(
