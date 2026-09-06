@@ -3,6 +3,8 @@ import { HeroStatusInfo, ItemSlotData, AbilitySlotData, DamageAnalytics } from '
 import { Minimap } from './Minimap'
 import { DamageAnalyticsWidget } from './DamageAnalyticsWidget'
 import { Heart, Zap, Sparkles, Navigation } from 'lucide-react'
+import { DotaImage } from './common/DotaImage'
+import { getHeroAsset, getItemAsset, getAbilityAsset } from '../utils/dotaAssets'
 
 interface HeroCenterColumnProps {
   hero: HeroStatusInfo
@@ -10,21 +12,6 @@ interface HeroCenterColumnProps {
   abilities: Record<string, AbilitySlotData>
   damage?: DamageAnalytics
   isDaytime: boolean
-}
-
-const formatItemName = (rawName?: string) => {
-  if (!rawName || rawName === 'empty') return 'Empty'
-  return rawName
-    .replace('item_', '')
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ')
-}
-
-const formatAbilityName = (rawName?: string) => {
-  if (!rawName) return 'Skill'
-  const parts = rawName.split('_')
-  return parts[parts.length - 1].toUpperCase()
 }
 
 export const HeroCenterColumn: React.FC<HeroCenterColumnProps> = ({
@@ -45,9 +32,11 @@ export const HeroCenterColumn: React.FC<HeroCenterColumnProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 flex items-center justify-center font-black text-xl text-cyan-300 shadow-md">
-                {hero.hero_display_name.charAt(0)}
-              </div>
+              <DotaImage
+                asset={getHeroAsset(hero.hero_name, hero.hero_display_name)}
+                className="w-16 h-11 rounded-xl border border-white/20 shadow-md object-cover"
+                aspectRatio="hero"
+              />
               <div className="absolute -bottom-1 -right-1 bg-amber-500 text-slate-950 font-black text-[10px] font-mono px-1.5 py-0.2 rounded-md border border-amber-300 shadow">
                 LVL {hero.level}
               </div>
@@ -125,35 +114,42 @@ export const HeroCenterColumn: React.FC<HeroCenterColumnProps> = ({
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
             {Object.entries(abilities).map(([key, ability]) => {
               const isOnCd = (ability.cooldown || 0) > 0
+              const abilityAsset = getAbilityAsset(ability.name)
+              const maxLvl = ability.ultimate ? 3 : 4
               return (
                 <div
                   key={key}
-                  className={`p-2 rounded-xl border flex flex-col items-center justify-between text-center relative overflow-hidden transition-all ${
+                  className={`p-1.5 rounded-xl border flex flex-col items-center justify-between text-center relative overflow-hidden transition-all ${
                     isOnCd
-                      ? 'bg-slate-950/80 border-slate-700/50 text-slate-500'
+                      ? 'bg-slate-950/90 border-slate-700/50 text-slate-500'
                       : ability.ultimate
-                      ? 'bg-purple-950/40 border-purple-500/40 text-purple-200 shadow-glow-purple'
-                      : 'bg-slate-900/80 border-white/10 text-slate-200'
+                      ? 'bg-purple-950/40 border-purple-500/50 text-purple-200 shadow-glow-purple'
+                      : 'bg-slate-900/80 border-white/15 text-slate-200 hover:border-cyan-500/40'
                   }`}
+                  title={abilityAsset.displayName}
                 >
-                  <span className="text-[10px] font-mono font-bold truncate max-w-full">
-                    {formatAbilityName(ability.name)}
-                  </span>
-                  <div className="flex items-center gap-0.5 mt-1">
-                    {Array.from({ length: 4 }).map((_, i) => (
+                  <div className="w-10 h-10 rounded-lg overflow-hidden relative shadow-inner">
+                    <DotaImage
+                      asset={abilityAsset}
+                      className="w-full h-full object-cover"
+                      aspectRatio="square"
+                    />
+                    {isOnCd && (
+                      <div className="absolute inset-0 bg-black/85 backdrop-blur-[1px] flex items-center justify-center font-mono font-black text-xs text-rose-400">
+                        {ability.cooldown}s
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-0.5 mt-1.5">
+                    {Array.from({ length: maxLvl }).map((_, i) => (
                       <div
                         key={i}
                         className={`w-1.5 h-1 rounded-sm ${
-                          i < (ability.level || 0) ? 'bg-cyan-400' : 'bg-slate-800'
+                          i < (ability.level || 0) ? 'bg-cyan-400 shadow-sm' : 'bg-slate-800'
                         }`}
                       />
                     ))}
                   </div>
-                  {isOnCd && (
-                    <div className="absolute inset-0 bg-black/80 flex items-center justify-center font-mono font-black text-xs text-rose-400">
-                      {ability.cooldown}s
-                    </div>
-                  )}
                 </div>
               )
             })}
@@ -171,22 +167,38 @@ export const HeroCenterColumn: React.FC<HeroCenterColumnProps> = ({
             {mainSlots.map((slotKey) => {
               const item = items[slotKey]
               const isEmpty = !item || item.name === 'empty'
+              const itemAsset = getItemAsset(item?.name)
+              const isOnCd = (item?.cooldown || 0) > 0
               return (
                 <div
                   key={slotKey}
-                  className={`p-2 rounded-xl border flex flex-col items-center justify-center text-center h-14 relative overflow-hidden transition-all ${
+                  className={`rounded-xl border flex flex-col items-center justify-center text-center h-14 relative overflow-hidden transition-all ${
                     isEmpty
-                      ? 'bg-slate-950/40 border-dashed border-white/10 text-slate-600'
-                      : 'bg-slate-900/90 border-white/15 text-slate-200 shadow-md'
+                      ? 'bg-slate-950/40 border-dashed border-white/10'
+                      : 'bg-slate-900/90 border-white/15 shadow-md hover:border-cyan-500/40'
                   }`}
+                  title={isEmpty ? 'Empty Slot' : itemAsset.displayName}
                 >
-                  <span className="text-[10px] font-semibold tracking-tight line-clamp-2">
-                    {formatItemName(item?.name)}
-                  </span>
-                  {(item?.charges || 0) > 0 && (
-                    <span className="absolute bottom-1 right-1 text-[9px] font-mono font-bold bg-amber-500/30 text-amber-300 px-1 rounded border border-amber-500/50">
-                      x{item?.charges}
-                    </span>
+                  {isEmpty ? (
+                    <span className="text-[10px] text-slate-600 font-mono select-none">Empty</span>
+                  ) : (
+                    <>
+                      <DotaImage
+                        asset={itemAsset}
+                        className="w-full h-full object-cover"
+                        aspectRatio="item"
+                      />
+                      {(item?.charges || 0) > 0 && (
+                        <span className="absolute bottom-1 right-1 text-[9px] font-mono font-black bg-black/85 text-amber-300 px-1 rounded border border-amber-500/50 shadow-sm">
+                          x{item?.charges}
+                        </span>
+                      )}
+                      {isOnCd && (
+                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center font-mono font-black text-xs text-rose-400">
+                          {item?.cooldown}s
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               )
@@ -198,35 +210,72 @@ export const HeroCenterColumn: React.FC<HeroCenterColumnProps> = ({
               {backpackSlots.map((slotKey) => {
                 const item = items[slotKey]
                 const isEmpty = !item || item.name === 'empty'
+                const itemAsset = getItemAsset(item?.name)
                 return (
                   <div
                     key={slotKey}
-                    className={`p-1 rounded-lg border text-center text-[9px] flex items-center justify-center h-8 ${
+                    className={`rounded-lg border text-center h-8 relative overflow-hidden flex items-center justify-center ${
                       isEmpty
-                        ? 'border-dashed border-slate-800 text-slate-700'
-                        : 'bg-slate-900 border-white/10 text-slate-300'
+                        ? 'border-dashed border-slate-800 bg-slate-950/30 text-slate-700'
+                        : 'bg-slate-900 border-white/10 shadow-sm'
                     }`}
+                    title={isEmpty ? 'Empty Backpack' : itemAsset.displayName}
                   >
-                    <span className="truncate">{formatItemName(item?.name)}</span>
+                    {isEmpty ? (
+                      <span className="text-[8px] font-mono text-slate-700">BP</span>
+                    ) : (
+                      <DotaImage
+                        asset={itemAsset}
+                        className="w-full h-full object-cover opacity-85 hover:opacity-100 transition-opacity"
+                        aspectRatio="item"
+                      />
+                    )}
                   </div>
                 )
               })}
             </div>
 
-            <div className="p-1.5 rounded-xl bg-slate-950/50 border border-white/5 flex flex-col items-center justify-center text-center">
-              <span className="text-[8px] font-mono uppercase text-slate-500 flex items-center gap-0.5">
-                <Navigation className="w-2.5 h-2.5 text-cyan-400" /> TP
-              </span>
-              <span className="text-[9px] font-bold text-cyan-300 truncate">
-                {tpSlot && tpSlot.name !== 'empty' ? `TP (${tpSlot.charges || 1})` : 'No TP'}
-              </span>
+            <div
+              className="p-1 rounded-xl bg-slate-950/50 border border-white/10 flex flex-col items-center justify-center text-center overflow-hidden relative group"
+              title={tpSlot && tpSlot.name !== 'empty' ? 'Town Portal Scroll' : 'No TP'}
+            >
+              {tpSlot && tpSlot.name !== 'empty' ? (
+                <div className="w-full h-full relative flex items-center justify-center">
+                  <DotaImage
+                    asset={getItemAsset(tpSlot.name || 'tpscroll')}
+                    className="w-full h-7 object-cover rounded-lg"
+                    aspectRatio="item"
+                  />
+                  {(tpSlot.charges || 0) > 0 && (
+                    <span className="absolute bottom-0 right-0 text-[8px] font-mono font-black bg-black/80 text-cyan-300 px-0.5 rounded">
+                      x{tpSlot.charges}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <Navigation className="w-3 h-3 text-slate-600 mb-0.5" />
+                  <span className="text-[8px] font-mono text-slate-600 uppercase">No TP</span>
+                </div>
+              )}
             </div>
 
-            <div className="p-1.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex flex-col items-center justify-center text-center">
-              <span className="text-[8px] font-mono uppercase text-emerald-400">Neutral</span>
-              <span className="text-[9px] font-bold text-emerald-200 truncate">
-                {formatItemName(neutralSlot?.name)}
-              </span>
+            <div
+              className="p-1 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex flex-col items-center justify-center text-center overflow-hidden relative"
+              title={neutralSlot && neutralSlot.name !== 'empty' ? getItemAsset(neutralSlot.name).displayName : 'No Neutral Item'}
+            >
+              {neutralSlot && neutralSlot.name !== 'empty' ? (
+                <DotaImage
+                  asset={getItemAsset(neutralSlot.name)}
+                  className="w-full h-7 object-cover rounded-lg"
+                  aspectRatio="item"
+                />
+              ) : (
+                <div className="flex flex-col items-center">
+                  <span className="text-[8px] font-mono uppercase text-emerald-600">Neutral</span>
+                  <span className="text-[8px] font-mono text-slate-600">Empty</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

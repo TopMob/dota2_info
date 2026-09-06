@@ -1,6 +1,8 @@
 import React from 'react'
 import { RoshanAnalytics } from '../types/game'
 import { Skull, ShieldAlert, Sparkles, CheckCircle2, Clock } from 'lucide-react'
+import { DotaImage } from './common/DotaImage'
+import { getItemAsset } from '../utils/dotaAssets'
 
 interface RoshanCardProps {
   roshan: RoshanAnalytics
@@ -60,9 +62,18 @@ export const RoshanCard: React.FC<RoshanCardProps> = ({ roshan, clockTime }) => 
 
       {isAegisHeld && (
         <div className="p-2.5 rounded-xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-1.5">
-          <div className="flex justify-between text-xs font-mono">
-            <span className="text-amber-300 font-bold">Aegis of the Immortal</span>
-            <span className="text-amber-200">{aegisRemaining}s left</span>
+          <div className="flex items-center justify-between text-xs font-mono">
+            <span className="text-amber-300 font-bold flex items-center gap-1.5">
+              <div className="w-5 h-4 rounded overflow-hidden flex-shrink-0 bg-slate-950">
+                <DotaImage
+                  asset={getItemAsset('aegis', 'Aegis')}
+                  className="w-full h-full object-cover"
+                  aspectRatio="item"
+                />
+              </div>
+              Aegis of the Immortal
+            </span>
+            <span className="text-amber-200 font-bold">{aegisRemaining}s left</span>
           </div>
           <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-white/5">
             <div
@@ -91,14 +102,32 @@ export const RoshanCard: React.FC<RoshanCardProps> = ({ roshan, clockTime }) => 
           <Sparkles className="w-3 h-3 text-cyan-400" /> Next Drop Forecast
         </span>
         <div className="flex flex-wrap gap-1.5">
-          {roshan.expected_drops.map((drop, i) => (
-            <span
-              key={i}
-              className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-900/90 text-slate-200 border border-white/10"
-            >
-              {drop}
-            </span>
-          ))}
+          {roshan.expected_drops.map((drop, i) => {
+            const dropSlug = drop.toLowerCase().includes('cheese')
+              ? 'cheese'
+              : drop.toLowerCase().includes('banner')
+              ? 'roshans_banner'
+              : drop.toLowerCase().includes('refresher')
+              ? 'refresher_shard'
+              : drop.toLowerCase().includes('shard')
+              ? 'aghanims_shard'
+              : 'aegis'
+            return (
+              <div
+                key={i}
+                className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-900/90 text-slate-200 border border-white/10 text-xs font-medium"
+              >
+                <div className="w-5 h-4 rounded overflow-hidden flex-shrink-0 bg-slate-950">
+                  <DotaImage
+                    asset={getItemAsset(dropSlug, drop)}
+                    className="w-full h-full object-cover"
+                    aspectRatio="item"
+                  />
+                </div>
+                <span className="text-[11px]">{drop}</span>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

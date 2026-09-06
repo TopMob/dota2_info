@@ -51,21 +51,32 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="glass-panel sticky top-0 z-40 px-5 py-3.5 mb-4 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
-      <div className="flex items-center gap-3.5">
-        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-black tracking-widest text-lg shadow-glow-cyan">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-lg bg-red-950/50 border border-red-500/40 flex items-center justify-center text-red-400 font-black tracking-wider text-base shadow-sm">
           D2
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-black tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">
+            <h1 className="text-base font-black tracking-wider text-white">
               DOTA 2 INSIGHT
             </h1>
-            <span className="text-[10px] px-2 py-0.5 rounded-full font-mono uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-              v1.5 PRO
+            <span
+              className={`text-[9px] px-2 py-0.5 rounded font-mono uppercase tracking-wider font-bold flex items-center gap-1 border ${
+                gameState.is_connected
+                  ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40'
+                  : 'bg-slate-900 text-slate-400 border-white/10'
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  gameState.is_connected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'
+                }`}
+              />
+              {gameState.is_connected ? 'LIVE GSI' : 'STANDBY'}
             </span>
           </div>
-          <p className="text-xs text-slate-400 font-mono">
-            {gameState.is_connected ? `Match: ${gameState.match_id || 'Active'}` : 'Offline • Push Protocol Standby'}
+          <p className="text-[11px] text-slate-400 font-mono">
+            {gameState.is_connected ? `Match ID: ${gameState.match_id || 'Active'}` : 'GSI Server Listening on Port 3000'}
           </p>
         </div>
       </div>

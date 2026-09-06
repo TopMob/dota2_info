@@ -1,6 +1,8 @@
 import React from 'react'
 import { ProcessedGameState } from '../types/game'
 import { ShieldCheck, ShieldAlert, Clock, Swords, Target, Heart, Zap } from 'lucide-react'
+import { DotaImage } from './common/DotaImage'
+import { getHeroAsset, getItemAsset } from '../utils/dotaAssets'
 
 interface StreamerPipOverlayProps {
   gameState: ProcessedGameState
@@ -18,8 +20,12 @@ export const StreamerPipOverlay: React.FC<StreamerPipOverlayProps> = ({ gameStat
       {/* Top compact bar */}
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/20 flex items-center justify-center font-black text-lg text-cyan-300">
-            {hero.hero_display_name.charAt(0)}
+          <div className="w-12 h-9 rounded-xl overflow-hidden border border-white/20 shadow-md flex-shrink-0 bg-slate-900">
+            <DotaImage
+              asset={getHeroAsset(hero.hero_name, hero.hero_display_name)}
+              className="w-full h-full object-cover"
+              aspectRatio="hero"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -73,9 +79,20 @@ export const StreamerPipOverlay: React.FC<StreamerPipOverlayProps> = ({ gameStat
             </span>
           </div>
 
-          <h4 className="text-xs font-black text-white truncate">
-            {item_prediction?.next_core_item?.display_name || 'No Target Item'}
-          </h4>
+          <div className="flex items-center gap-2">
+            {item_prediction?.next_core_item && (
+              <div className="w-7 h-5 rounded overflow-hidden border border-cyan-500/30 flex-shrink-0 bg-slate-950">
+                <DotaImage
+                  asset={getItemAsset(item_prediction.next_core_item.item_id, item_prediction.next_core_item.display_name)}
+                  className="w-full h-full object-cover"
+                  aspectRatio="item"
+                />
+              </div>
+            )}
+            <h4 className="text-xs font-black text-white truncate">
+              {item_prediction?.next_core_item?.display_name || 'No Target Item'}
+            </h4>
+          </div>
 
           <div className="flex justify-between items-center text-[10px] font-mono text-slate-300 pt-1 border-t border-white/5">
             <span>ETA: <strong className="text-cyan-300">{item_prediction?.next_core_item?.eta_formatted || '--'}</strong></span>

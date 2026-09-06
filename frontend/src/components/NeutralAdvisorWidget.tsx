@@ -1,6 +1,8 @@
 import React from 'react'
 import { NeutralAdvisorAnalytics } from '../types/game'
 import { Sparkles, Clock, Compass } from 'lucide-react'
+import { DotaImage } from './common/DotaImage'
+import { getItemAsset } from '../utils/dotaAssets'
 
 interface NeutralAdvisorWidgetProps {
   advisor?: NeutralAdvisorAnalytics
@@ -79,6 +81,15 @@ export const NeutralAdvisorWidget: React.FC<NeutralAdvisorWidgetProps> = ({ advi
       <div className="p-2.5 rounded-xl bg-slate-950/70 border border-white/5 flex items-center justify-between text-xs font-mono">
         <div className="flex items-center gap-2">
           <span className="text-slate-400">Equipped:</span>
+          {has_neutral_equipped && (
+            <div className="w-6 h-5 rounded overflow-hidden border border-emerald-500/40 flex-shrink-0">
+              <DotaImage
+                asset={getItemAsset(equipped_item_name)}
+                className="w-full h-full object-cover"
+                aspectRatio="item"
+              />
+            </div>
+          )}
           <span
             className={`font-bold px-2 py-0.5 rounded text-[11px] ${
               has_neutral_equipped
@@ -112,9 +123,16 @@ export const NeutralAdvisorWidget: React.FC<NeutralAdvisorWidgetProps> = ({ advi
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold text-[10px] flex items-center justify-center border border-emerald-500/30">
+                  <span className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold text-[10px] flex items-center justify-center border border-emerald-500/30 flex-shrink-0">
                     #{item.rank}
                   </span>
+                  <div className="w-7 h-5 rounded overflow-hidden border border-white/10 flex-shrink-0 bg-slate-950">
+                    <DotaImage
+                      asset={getItemAsset(item.item_id, item.name)}
+                      className="w-full h-full object-cover"
+                      aspectRatio="item"
+                    />
+                  </div>
                   <h4 className="text-xs font-bold text-white">{item.name}</h4>
                 </div>
                 <span className="text-[10px] font-mono text-emerald-300 font-bold bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-500/20">

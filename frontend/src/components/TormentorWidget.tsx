@@ -1,6 +1,8 @@
 import React from 'react'
 import { TormentorAnalytics } from '../types/game'
-import { Zap, Clock, CheckCircle2, ShoppingBag } from 'lucide-react'
+import { Clock, CheckCircle2, ShoppingBag } from 'lucide-react'
+import { DotaImage } from './common/DotaImage'
+import { getItemAsset } from '../utils/dotaAssets'
 
 interface TormentorWidgetProps {
   tormentor?: TormentorAnalytics
@@ -8,6 +10,7 @@ interface TormentorWidgetProps {
 }
 
 const formatSeconds = (sec: number) => {
+  if (sec <= 0) return 'NOW'
   const m = Math.floor(sec / 60)
   const s = sec % 60
   return `${m}:${s < 10 ? '0' : ''}${s}`
@@ -23,8 +26,12 @@ export const TormentorWidget: React.FC<TormentorWidgetProps> = ({ tormentor }) =
     <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3 border border-white/10 shadow-xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-600/30 to-rose-600/30 border border-purple-500/40 flex items-center justify-center text-purple-300 shadow-md">
-            <Zap className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-xl overflow-hidden border border-purple-500/40 flex items-center justify-center bg-slate-950 shadow-md flex-shrink-0">
+            <DotaImage
+              asset={getItemAsset('aghanims_shard', "Aghanim's Shard")}
+              className="w-full h-full object-cover"
+              aspectRatio="item"
+            />
           </div>
           <div>
             <h3 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-1.5">

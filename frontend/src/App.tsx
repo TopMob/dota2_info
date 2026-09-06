@@ -32,8 +32,8 @@ export function App() {
               onClick={() => setActiveTab('live')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'live'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-glow-cyan'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-slate-800 text-cyan-300 border border-cyan-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
               }`}
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
@@ -43,8 +43,8 @@ export function App() {
               onClick={() => setActiveTab('pip')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'pip'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-glow-cyan'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-slate-800 text-cyan-300 border border-cyan-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
               }`}
             >
               <Tv2 className="w-3.5 h-3.5" />
@@ -54,23 +54,19 @@ export function App() {
               onClick={() => setActiveTab('analytics')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'analytics'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-glow-cyan'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-slate-800 text-cyan-300 border border-cyan-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
               }`}
             >
               <History className="w-3.5 h-3.5" />
-              Match Telemetry &amp; CV Specs
+              Match Telemetry
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-4 text-xs font-mono text-slate-400">
-            <span className="flex items-center gap-1.5">
+          <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-slate-400">
+            <span className="flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-white/5">
               <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              100% VAC-Safe Push Protocol
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-              Hardware Accelerated
+              Valve GSI Protocol
             </span>
           </div>
         </div>

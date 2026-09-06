@@ -1,6 +1,8 @@
 import React from 'react'
 import { ItemPredictorAnalytics } from '../types/game'
 import { Clock, Target, ShieldCheck, ShieldAlert, Layers } from 'lucide-react'
+import { DotaImage } from './common/DotaImage'
+import { getItemAsset } from '../utils/dotaAssets'
 
 interface NextItemPredictorProps {
   prediction?: ItemPredictorAnalytics
@@ -49,8 +51,12 @@ export const NextItemPredictor: React.FC<NextItemPredictorProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-cyan-500/30 flex items-center justify-center font-black text-sm text-cyan-300 shadow-md flex-shrink-0">
-              {next_core_item.display_name.charAt(0)}
+            <div className="w-12 h-9 rounded-xl overflow-hidden border border-cyan-500/40 shadow-md flex-shrink-0 bg-slate-900">
+              <DotaImage
+                asset={getItemAsset(next_core_item.item_id, next_core_item.display_name)}
+                className="w-full h-full object-cover"
+                aspectRatio="item"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -148,14 +154,23 @@ export const NextItemPredictor: React.FC<NextItemPredictorProps> = ({
                 key={alt.item_id}
                 className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5 flex flex-col justify-between gap-1.5 hover:border-indigo-500/30 transition-all"
               >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-slate-200">{alt.display_name}</span>
-                    <p className="text-[10px] text-slate-400 leading-snug line-clamp-2 mt-0.5">
-                      {alt.reason}
-                    </p>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start gap-2">
+                    <div className="w-8 h-6 rounded-lg overflow-hidden border border-white/10 flex-shrink-0 bg-slate-950 mt-0.5">
+                      <DotaImage
+                        asset={getItemAsset(alt.item_id, alt.display_name)}
+                        className="w-full h-full object-cover"
+                        aspectRatio="item"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-200">{alt.display_name}</span>
+                      <p className="text-[10px] text-slate-400 leading-snug line-clamp-2 mt-0.5">
+                        {alt.reason}
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-amber-300 ml-2">
+                  <span className="text-[10px] font-mono font-bold text-amber-300 ml-2 flex-shrink-0">
                     {alt.cost}g
                   </span>
                 </div>
