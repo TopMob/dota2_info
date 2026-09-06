@@ -226,6 +226,20 @@ class TormentorAnalytics(BaseModel):
     should_buy_from_shop: bool = False
 
 
+class ReviewInsight(BaseModel):
+    code: str
+    value: int = 0
+    severity: str = "info"
+
+
+class MatchReview(BaseModel):
+    score: int = 55
+    sample_count: int = 0
+    strengths: List[ReviewInsight] = []
+    focus: List[ReviewInsight] = []
+    phases: List[Dict[str, Any]] = []
+
+
 class PostGameDebrief(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -243,6 +257,7 @@ class PostGameDebrief(BaseModel):
     denies: int = 0
     highlights: List[str] = []
     improvement_areas: List[str] = []
+    review: Optional[MatchReview] = None
 
 
 class ProcessedGameState(BaseModel):
@@ -268,6 +283,7 @@ class ProcessedGameState(BaseModel):
     farm_coach: FarmCoachAnalytics = FarmCoachAnalytics()
     tormentor: TormentorAnalytics = TormentorAnalytics()
     post_game: Optional[PostGameDebrief] = None
+    match_review: Optional[MatchReview] = None
     items: Dict[str, Any] = {}
     abilities: Dict[str, Any] = {}
 

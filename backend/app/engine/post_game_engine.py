@@ -10,6 +10,7 @@ def generate_post_game_debrief(
     hero: HeroStatusInfo,
     economy: EconomyAnalytics,
     damage: DamageAnalytics,
+    review=None,
 ) -> PostGameDebrief:
     duration_mins = max(1, clock_time // 60)
     duration_str = f"{duration_mins}:{clock_time % 60:02d}"
@@ -56,4 +57,5 @@ def generate_post_game_debrief(
         denies=economy.denies,
         highlights=highlights,
         improvement_areas=improvements,
+        review=review,
     )

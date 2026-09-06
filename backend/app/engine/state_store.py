@@ -11,6 +11,7 @@ from app.engine.neutral_engine import compute_neutral_advisor
 from app.engine.farm_coach_engine import compute_farm_coach
 from app.engine.tormentor_engine import compute_tormentor_analytics
 from app.engine.post_game_engine import generate_post_game_debrief
+from app.engine.match_analyzer import MatchJournal, build_match_review
 
 DEBUFF_FIELDS = [
     ("stunned", "Stunned"),
@@ -57,6 +58,7 @@ class StateStore:
         self.previous_payload: Optional[GSIPayload] = None
         self.processed_state: ProcessedGameState = ProcessedGameState(is_connected=False)
         self.last_update_timestamp: float = 0.0
+        self.journal = MatchJournal()
 
     def update(self, payload: GSIPayload) -> ProcessedGameState:
         self.previous_payload = self.current_payload
@@ -98,6 +100,19 @@ class StateStore:
         farm_coach = compute_farm_coach(player_data, hero_data, clock_time)
         tormentor = compute_tormentor_analytics(hero_data, player_data, clock_time)
 
+        self.journal.record(
+            match_id=map_data.matchid if map_data else None, clock_time=clock_time or 0,
+            last_hits=economy.last_hits, net_worth=economy.net_worth, gpm=economy.gpm, xpm=economy.xpm,
+            hero_damage=damage.total_hero_damage, deaths=player_data.deaths if player_data else 0,
+            alive=hero_status.alive,
+        )
+        match_review = build_match_review(
+            self.journal, clock_time=clock_time or 0, gpm=economy.gpm, xpm=economy.xpm,
+            dpm=damage.dpm, last_hits=economy.last_hits, net_worth=economy.net_worth,
+            deaths=player_data.deaths if player_data else 0,
+            buyback_ready=economy.buyback_status.value == "READY",
+        )
+
         post_game = None
         if game_state in ["DOTA_GAMERULES_STATE_POST_GAME", "DOTA_GAMERULES_STATE_DISCONNECT"]:
             post_game = generate_post_game_debrief(
@@ -108,6 +123,7 @@ class StateStore:
                 hero=hero_status,
                 economy=economy,
                 damage=damage,
+                review=match_review,
             )
 
         self.processed_state = ProcessedGameState(
@@ -131,6 +147,7 @@ class StateStore:
             farm_coach=farm_coach,
             tormentor=tormentor,
             post_game=post_game,
+            match_review=match_review,
             items={k: v.model_dump() for k, v in items_data.items()},
             abilities={k: v.model_dump() for k, v in abilities_data.items()},
         )

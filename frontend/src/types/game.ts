@@ -211,6 +211,7 @@ export interface PostGameDebrief {
   denies: number
   highlights: string[]
   improvement_areas: string[]
+  review?: MatchReview | null
 }
 
 export interface ProcessedGameState {
@@ -234,6 +235,7 @@ export interface ProcessedGameState {
   farm_coach?: FarmCoachAnalytics
   tormentor?: TormentorAnalytics
   post_game?: PostGameDebrief | null
+  match_review?: MatchReview | null
   items: Record<string, ItemSlotData>
   abilities: Record<string, AbilitySlotData>
 }
@@ -268,4 +270,24 @@ export interface InAppAlertItem {
   label: string
   urgency: 'normal' | 'warning' | 'critical'
   timestamp: number
+}
+
+export interface ReviewInsight {
+  code: string
+  value: number
+  severity: 'info' | 'positive' | 'warning' | 'critical'
+}
+export interface MatchPhaseReview {
+  phase: 'laning' | 'midgame' | 'late'
+  last_hits: number
+  net_worth: number
+  gpm: number
+  grade: 'good' | 'needs_work'
+}
+export interface MatchReview {
+  score: number
+  sample_count: number
+  strengths: ReviewInsight[]
+  focus: ReviewInsight[]
+  phases: MatchPhaseReview[]
 }
