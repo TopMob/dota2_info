@@ -1,0 +1,3 @@
+export interface PlayerSummary { account_id: number; name: string; avatar?: string | null; rank_tier?: number | null; leaderboard_rank?: number | null; wins: number; losses: number; matches: number; win_rate: number }
+export interface PlayerMatch { match_id: number; started_at: number; hero_id: number; hero_name: string; result: 'win' | 'loss'; duration: number; kills: number; deaths: number; assists: number; gpm: number; xpm: number; hero_damage: number; tower_damage: number; last_hits: number; performance_score: number; takeaway: string }
+export interface PlayerProfileResponse { player: PlayerSummary; matches: PlayerMatch[]; source: string }
